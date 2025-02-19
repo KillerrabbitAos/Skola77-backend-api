@@ -386,7 +386,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KillerRabbitAos/Skola77.git"
+    "url": "git+https://github.com/KillerRabbitAos/Skola77-backend-api.git"
   },
   "keywords": [
     "Skola77",
@@ -398,7 +398,7 @@
   "author": "Artur Norrby",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/KillerRabbitAos/Skola77/issues"
+    "url": "https://github.com/KillerRabbitAos/Skola77-backend-api/issues"
   },
-  "homepage": "https://github.com/KillerRabbitAos/Skola77#readme"
+  "homepage": "https://github.com/KillerRabbitAos/Skola77-backend-api#readme"
 }
