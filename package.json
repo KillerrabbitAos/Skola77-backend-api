@@ -1,6 +1,6 @@
 {
   "name": "skola77-api",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "The backend-api for skola77.",
   "main": "index.js",
   "dependencies": {
