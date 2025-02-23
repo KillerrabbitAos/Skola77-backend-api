@@ -1,10 +1,6 @@
 const {
   User,
-  Group,
-  SeatingPlan,
-  Room,
   Organization,
-  Membership,
 } = require("../../models");
 const Sequelize = require("sequelize");
 

@@ -1,5 +1,4 @@
 const userService = require("../services/userService");
-const authService = require("../services/authService");
 const { processAndSaveImage } = require("../services/uploadService");
 
 exports.createOrganization = async (req, res) => {
@@ -116,7 +115,7 @@ exports.create = async (req, res) => {
     }
     const userId = req.user.id;
 
-    const { entity } = await userService.createEntity(
+    await userService.createEntity(
       userId,
       type,
       name,

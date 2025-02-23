@@ -19,7 +19,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ storage, fileFilter });
+multer({ storage, fileFilter });
 
 /**
  * Processes and saves an image for a user.

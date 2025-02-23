@@ -28,7 +28,7 @@ exports.register = async (req, res) => {
     const { name, email, password } = req.body;
     console.log("Register request:", name, email, password);
     try {
-      const token = await authService.register({
+      await authService.register({
         name,
         email,
         password,

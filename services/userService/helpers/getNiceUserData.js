@@ -1,7 +1,5 @@
 const {
-  Organization,
   User,
-  Membership,
   Room,
   SeatingPlan,
   Group,
@@ -11,14 +9,6 @@ const {
 } = require("../../../models");
 
 async function getNiceUserData(userId) {
-  const organizations = await Organization.findAll({
-    include: {
-      model: User,
-      as: "members",
-      through: { model: Membership },
-      where: { id: userId },
-    },
-  });
 
   const [ownedRooms, sharedRooms] = await Promise.all([
     Room.findAll({ where: { ownerId: userId } }),
@@ -71,24 +61,12 @@ async function getNiceUserData(userId) {
     ];
   };
 
-  const formatOrganizationData = (orgs) => {
-    return orgs.map((org) => {
-      const isOwner = org.owner_id === userId;
-      return {
-        id: org.id,
-        name: org.name,
-        role: isOwner ? "owner" : "member",
-      };
-    });
-  };
-
   const roomsData = formatEntityData(ownedRooms, sharedRooms);
   const seatingPlansData = formatEntityData(
     ownedSeatingPlans,
     sharedSeatingPlans
   );
   const groupsData = formatEntityData(ownedGroups, sharedGroups);
-  const organizationData = formatOrganizationData(organizations);
 
   const removeDuplicates = (arr) =>
     arr.filter(

@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { User } = require("../models");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { processAndSaveImage, upload } = require("../services/uploadService");
 const checkAdmin = require("../middlewares/checkAdmin");
 
 router.use(checkAdmin);

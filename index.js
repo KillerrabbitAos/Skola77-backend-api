@@ -58,7 +58,7 @@ function createServer(config = {}) {
   });
 
   // Error Handling Middleware
-  app.use((err, req, res, next) => {
+  app.use((err, res) => {
     console.error("Error:", err);
     res.status(500).json({ status: false, error: err.message || "Internal Server Error" });
   });

@@ -5,6 +5,7 @@ const {
   UserRoom,
   UserGroup,
   UserSeatingPlan,
+  User,
 } = require("../../models");
 const getNiceUserData = require("./helpers/getNiceUserData");
 
@@ -212,7 +213,7 @@ async function upsertSeatingPlan(userId, seatingPlan, groups, rooms) {
 
   if (!isSpecialId) {
     const query =
-      group.owner !== "you"
+      seatingPlan.owner !== "you"
         ? {
             where: { id: seatingPlan.id },
             include: {
@@ -223,7 +224,7 @@ async function upsertSeatingPlan(userId, seatingPlan, groups, rooms) {
             },
           }
         : {
-            where: { id: group.id, ownerId: userId },
+            where: { id: seatingPlan.id, ownerId: userId },
           };
     const existingPlan = await SeatingPlan.findOne(query);
     if (existingPlan) {

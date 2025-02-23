@@ -1,6 +1,3 @@
-const jwt = require("jsonwebtoken");
-const { User } = require("../models");
-
 const checkAdmin = async (req, res, next) => {
   const user = req.user;
   try {
@@ -8,6 +5,7 @@ const checkAdmin = async (req, res, next) => {
       return res.status(403).json({ message: "Forbidden" });
     }
   } catch (error) {
+    console.error("Error checking admin:", error);
     res.status(401).json({ message: "Not admin" });
   }
   next();
