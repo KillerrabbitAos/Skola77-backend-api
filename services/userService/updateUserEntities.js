@@ -9,6 +9,10 @@ const {
 } = require("../../models");
 const getNiceUserData = require("./helpers/getNiceUserData");
 
+function checkIfSpecial(id) {
+  return !Number.isInteger(id) && id.toString().length > 5;
+}
+
 /**
  * Maps new IDs to the given entity's "jsData" and updates the corresponding database record.
  *
@@ -43,8 +47,7 @@ async function mapNewIds(entity, type) {
  * @returns {Promise<Object>} - The upserted group object.
  */
 async function upsertGroup(userId, group) {
-  const isSpecialId =
-    !Number.isInteger(group.id) && group.id.toString().length > 5;
+  const isSpecialId = checkIfSpecial(group.id);
   if (!isSpecialId) {
     const query =
       group.owner !== "you"
@@ -101,8 +104,7 @@ async function upsertGroup(userId, group) {
  * @throws {Error} If the room is not found.
  */
 async function upsertRoom(userId, room) {
-  const roomHasOldIdFormat =
-    !Number.isInteger(room.id) && room.id.toString().length > 5;
+  const roomHasOldIdFormat = checkIfSpecial(room.id);
 
   const newJsData = JSON.stringify({
     id: room.id,
@@ -134,7 +136,7 @@ async function upsertRoom(userId, room) {
 
     if (existingRoom) {
       try {
-        await existingRoom.update({...data, ownerId: userId});
+        await existingRoom.update({ ...data, ownerId: userId });
         return existingRoom;
       } catch (error) {
         console.error("Error updating room:", error);
@@ -143,10 +145,27 @@ async function upsertRoom(userId, room) {
     }
   }
 
-  const newRoom = await Room.create({...data, ownerId: userId});
+  const newRoom = await Room.create({ ...data, ownerId: userId });
   return { ...newRoom.dataValues, id: newRoom.id };
 }
 
+function findGroupIdForSeatingPlan(groups, seatingPlan) {
+  groups.find((group) => JSON.parse(group.jsData).id === seatingPlan.klass?.id)
+    ?.id ||
+    groups.find(
+      (group) => JSON.parse(group.jsData).namn === seatingPlan.klass?.namn
+    )?.id ||
+    null;
+}
+
+function findRoomIdForSeatingPlan(rooms, seatingPlan) {
+  rooms.find((room) => JSON.parse(room.jsData).id === seatingPlan.klassrum.id)
+    ?.id ||
+    rooms.find(
+      (room) => JSON.parse(room.jsData).namn === seatingPlan.klassrum.namn
+    )?.id ||
+    null;
+}
 /**
  * Upserts a seating plan for a user.
  *
@@ -161,40 +180,10 @@ async function upsertRoom(userId, room) {
  * @returns {Promise<Object>} The upserted seating plan object.
  */
 async function upsertSeatingPlan(userId, seatingPlan, groups, rooms) {
-  if (!seatingPlan) {
-    console.error("Invalid seating plan:", seatingPlan);
-    return null;
-  }
-  if (!seatingPlan.klassrum) {
-    console.error("Invalid seating plan room:", seatingPlan.klassrum);
-    return null;
-  }
-  if (!seatingPlan.klass) {
-    console.error("Invalid seating plan class:", seatingPlan.klassrum);
-    return null;
-  }
+  const isSpecialId = checkIfSpecial(seatingPlan.id);
 
-  const isSpecialId =
-    seatingPlan.id &&
-    !Number.isInteger(seatingPlan.id) &&
-    seatingPlan.id.toString().length > 5;
-
-  const groupId =
-    groups.find(
-      (group) => JSON.parse(group.jsData).id === seatingPlan.klass?.id
-    )?.id ||
-    groups.find(
-      (group) => JSON.parse(group.jsData).namn === seatingPlan.klass?.namn
-    )?.id ||
-    null;
-
-  const roomId =
-    rooms.find((room) => JSON.parse(room.jsData).id === seatingPlan.klassrum.id)
-      ?.id ||
-    rooms.find(
-      (room) => JSON.parse(room.jsData).namn === seatingPlan.klassrum.namn
-    )?.id ||
-    null;
+  const groupId = findGroupIdForSeatingPlan(groups, seatingPlan);
+  const roomId = findRoomIdForSeatingPlan(rooms, seatingPlan);
 
   const seatingPlanData = {
     klass: {

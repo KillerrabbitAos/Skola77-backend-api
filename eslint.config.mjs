@@ -1,30 +1,46 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
+import securityPlugin from "eslint-plugin-security";
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
-  // Basinställningar för alla .js-filer med Node-miljö
   {
     files: ["**/*.js"],
     languageOptions: {
       sourceType: "commonjs",
       globals: {
-        ...globals.node, // Inkludera Node-globals som t.ex. process, __dirname, etc.
-      }
-    }
+        ...globals.node,
+      },
+    },
+    plugins: {
+      security: securityPlugin,
+    },
+    rules: {
+      "max-depth": ["error", 3],
+      "max-lines-per-function": [
+        "error",
+        { max: 50, skipBlankLines: true, skipComments: true },
+      ],
+      "security/detect-object-injection": "off",
+      "max-lines": [
+        "warn",
+        { max: 300, skipBlankLines: true, skipComments: true },
+      ],
+    },
   },
 
-  // Lägg till browser-globals
-  {
-    languageOptions: { globals: globals.browser }
-  },
-
-  // Jest override för testfiler
   {
     files: ["**/*.test.js"],
-    languageOptions: { globals: globals.jest }
+    languageOptions: {
+      globals: {
+        ...globals.jest, // Jest-globals
+      },
+    },
   },
-
-  // Rekommenderade ESLint-regler
+  {
+    files: ["models/**/*.js", "models/**/**/*.js"],
+    rules: {
+      "max-lines-per-function": "off",
+    },
+  },
   pluginJs.configs.recommended,
 ];

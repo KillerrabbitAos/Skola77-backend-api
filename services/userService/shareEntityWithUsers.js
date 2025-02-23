@@ -1,5 +1,15 @@
 const { Room, SeatingPlan, Group, User } = require("../../models");
 
+function getEntityNameAndInstance(type, entityId) {
+  if (type === "room") {
+    return [Room.findByPk(entityId), "Room"];
+  } else if (type === "seatingplan") {
+    return [SeatingPlan.findByPk(entityId), "Seating plan"];
+  } else if (type === "group") {
+    return [Group.findByPk(entityId), "Group"];
+  }
+}
+
 async function shareEntityWithUsers(
   userId,
   type,
@@ -7,19 +17,7 @@ async function shareEntityWithUsers(
   userIds,
   permissions
 ) {
-  let entity, entityName;
-  if (type === "room") {
-    entity = await Room.findByPk(entityId);
-    entityName = "Room";
-  } else if (type === "seatingplan") {
-    entity = await SeatingPlan.findByPk(entityId);
-    entityName = "Seating plan";
-  } else if (type === "group") {
-    entity = await Group.findByPk(entityId);
-    entityName = "Group";
-  } else {
-    throw new Error("Invalid entity type");
-  }
+  const [entity, entityName] = getEntityNameAndInstance(type, entityId);
 
   if (!entity) {
     throw new Error(`${entityName} not found`);

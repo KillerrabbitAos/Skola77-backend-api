@@ -1,29 +1,28 @@
-const {
-  User,
-  Organization,
-} = require("../../models");
+const { User, Organization } = require("../../models");
 const Sequelize = require("sequelize");
 
-const SERVER_ADDRESS = process.env.SERVER_ADDRESS || 'localhost';
-const SERVER_PORT = process.env.SERVER_PORT || '5051';
+const SERVER_ADDRESS = process.env.SERVER_ADDRESS || "localhost";
+const SERVER_PORT = process.env.SERVER_PORT || "5051";
 
-async function users(query, userId) {
-  const userMemberInclude = {
+const userMemberInclude = (userId) => {
+  return {
     model: User,
     as: "members",
     through: { attributes: [] },
     where: { id: userId },
     required: true,
   };
+};
 
-  const organizationInclude = {
-    model: Organization,
-    as: "members",
-    through: { attributes: [] },
-    required: true,
-    include: [userMemberInclude],
-  };
+const organizationInclude = {
+  model: Organization,
+  as: "members",
+  through: { attributes: [] },
+  required: true,
+  include: [userMemberInclude],
+};
 
+async function users(query) {
   const orgMemberWhere = {
     [Sequelize.Op.or]: [
       { name: { [Sequelize.Op.iLike]: `${query}%` } },

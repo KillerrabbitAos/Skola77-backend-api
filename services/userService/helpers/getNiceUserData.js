@@ -8,9 +8,8 @@ const {
   UserGroup,
 } = require("../../../models");
 
-async function getNiceUserData(userId) {
-
-  const [ownedRooms, sharedRooms] = await Promise.all([
+function ownedAndSharedRoomsOfUserById(userId) {
+  return Promise.all([
     Room.findAll({ where: { ownerId: userId } }),
     Room.findAll({
       include: {
@@ -21,8 +20,10 @@ async function getNiceUserData(userId) {
       },
     }),
   ]);
+}
 
-  const [ownedSeatingPlans, sharedSeatingPlans] = await Promise.all([
+function ownedAndSharedSeatingPlansOfUserById(userId) {
+  return Promise.all([
     SeatingPlan.findAll({ where: { ownerId: userId } }),
     SeatingPlan.findAll({
       include: {
@@ -33,8 +34,10 @@ async function getNiceUserData(userId) {
       },
     }),
   ]);
+}
 
-  const [ownedGroups, sharedGroups] = await Promise.all([
+function ownedAndSharedGroupsOfUserById(userId) {
+  return Promise.all([
     Group.findAll({ where: { ownerId: userId } }),
     Group.findAll({
       include: {
@@ -45,21 +48,71 @@ async function getNiceUserData(userId) {
       },
     }),
   ]);
+}
 
-  const formatEntityData = (owned, shared) => {
-    return [
-      ...owned.map((entity) => ({
-        ...entity.toJSON(),
-        source: `owned by user ${entity.ownerId}`,
-        permissions: "owner",
-      })),
-      ...shared.map((entity) => ({
-        ...entity.toJSON(),
-        source: `shared by user ${entity.ownerId}`,
-        permissions: "read",
-      })),
-    ];
+function formatEntityData(owned, shared) {
+  return [
+    ...owned.map((entity) => ({
+      ...entity.toJSON(),
+      source: `owned by user ${entity.ownerId}`,
+      permissions: "owner",
+    })),
+    ...shared.map((entity) => ({
+      ...entity.toJSON(),
+      source: `shared by user ${entity.ownerId}`,
+      permissions: "read",
+    })),
+  ];
+}
+const removeDuplicates = (arr) =>
+  arr.filter(
+    (value, index, self) => index === self.findIndex((t) => t.id === value.id)
+  );
+
+function convertGroupToOldFrontendFormat(group, userId) {
+  const jsData = JSON.parse(group.jsData);
+  return {
+    id: group.id,
+    namn: group.name,
+    permissions: group.permissions,
+    personer: jsData.personer,
+    owner: group.ownerId === userId ? "you" : group.ownerId,
   };
+}
+
+function convertRoomToOldFrontendFormat(room, userId) {
+  const jsData = JSON.parse(room.jsData);
+  return {
+    id: room.id,
+    namn: room.name,
+    permissions: room.permissions,
+    owner: room.ownerId === userId ? "you" : room.ownerId,
+    rows: jsData.rows,
+    cols: jsData.cols,
+    grid: jsData.grid,
+  };
+}
+
+function convertSeatingPlanToOldFrontendFormat(seatingPlan, userId) {
+  const jsData = JSON.parse(seatingPlan.jsData);
+  return {
+    id: seatingPlan.id,
+    permissions: seatingPlan.permissions,
+    owner: seatingPlan.ownerId === userId ? "you" : seatingPlan.ownerId,
+    namn: seatingPlan.name,
+    klassrum: { ...jsData.klassrum },
+    klass: { ...jsData.klasser },
+  };
+}
+
+async function getNiceUserData(userId) {
+  const [ownedRooms, sharedRooms] = await ownedAndSharedRoomsOfUserById(userId);
+
+  const [ownedSeatingPlans, sharedSeatingPlans] =
+    await ownedAndSharedSeatingPlansOfUserById(userId);
+
+  const [ownedGroups, sharedGroups] =
+    await ownedAndSharedGroupsOfUserById(userId);
 
   const roomsData = formatEntityData(ownedRooms, sharedRooms);
   const seatingPlansData = formatEntityData(
@@ -68,50 +121,17 @@ async function getNiceUserData(userId) {
   );
   const groupsData = formatEntityData(ownedGroups, sharedGroups);
 
-  const removeDuplicates = (arr) =>
-    arr.filter(
-      (value, index, self) => index === self.findIndex((t) => t.id === value.id)
-    );
-
   const oldFrontendData = {
     klasser: removeDuplicates(
-      groupsData.map((group) => {
-        const jsData = JSON.parse(group.jsData);
-        return {
-          id: group.id,
-          namn: group.name,
-          permissions: group.permissions,
-          personer: jsData.personer,
-          owner: group.ownerId === userId ? "you" : group.ownerId,
-        };
-      })
+      groupsData.map((group) => convertGroupToOldFrontendFormat(group, userId))
     ),
     klassrum: removeDuplicates(
-      roomsData.map((room) => {
-        const jsData = JSON.parse(room.jsData);
-        return {
-          id: room.id,
-          permissions: room.permissions,
-          owner: room.ownerId === userId ? "you" : room.ownerId,
-          namn: room.name,
-          rows: jsData.rows,
-          cols: jsData.cols,
-          grid: jsData.grid,
-        };
-      })
+      roomsData.map((room) => convertRoomToOldFrontendFormat(room, userId))
     ),
     placeringar: removeDuplicates(
-      seatingPlansData.map((seatingPlan) => {
-        const jsData = JSON.parse(seatingPlan.jsData);
-        return {
-          id: seatingPlan.id,
-          permissions: seatingPlan.permissions,
-          owner: seatingPlan.ownerId === userId ? "you" : seatingPlan.ownerId,
-          namn: seatingPlan.name,
-          klassrum: { ...jsData.klassrum },
-          klass: { ...jsData.klasser },
-        };
-      })
+      seatingPlansData.map((seatingPlan) =>
+        convertSeatingPlanToOldFrontendFormat(seatingPlan, userId)
+      )
     ),
   };
 
