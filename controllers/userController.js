@@ -1,4 +1,4 @@
-const userService = require("../services/user");
+const userService = require("../services/userService");
 const authService = require("../services/authService");
 const { processAndSaveImage } = require("../services/uploadService");
 
