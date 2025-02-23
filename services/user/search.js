@@ -8,6 +8,9 @@ const {
 } = require("../../models");
 const Sequelize = require("sequelize");
 
+const SERVER_ADDRESS = process.env.SERVER_ADDRESS || 'localhost';
+const SERVER_PORT = process.env.SERVER_PORT || '5051';
+
 async function users(query, userId) {
   const userMemberInclude = {
     model: User,
@@ -62,7 +65,7 @@ async function users(query, userId) {
     id: member.id,
     name: member.name,
     email: member.email,
-    avatar: `http://localhost:5051/uploads/${member.id}/pfp.png`,
+    avatar: `http://${SERVER_ADDRESS}:${SERVER_PORT}/uploads/${member.id}/pfp.png`,
   }));
 
   return result;

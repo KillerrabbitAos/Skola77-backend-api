@@ -63,6 +63,7 @@ const register = async ({ name, email, password, file, session }) => {
     expiresIn: "1h",
   });
   session.token = token;
+  console.log(`User ${user.id} registered`);
   return token;
 };
 

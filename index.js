@@ -12,6 +12,7 @@ const authenticate = require("./middlewares/authenticate");
 function createServer(config = {}) {
   const app = express();
   const PORT = config.port || process.env.PORT || 5051;
+  const logStream = config.logStream || process.stdout;
 
   // CORS Configuration
   const corsOptions = {
@@ -65,7 +66,9 @@ function createServer(config = {}) {
   // Start the server only if no external app is provided
   if (!config.noStart) {
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}.`);
+      const message = `Server is running on port ${PORT}.`;
+      console.log(message);
+      logStream.write(`${message}\n`);
     });
   }
 
