@@ -10,7 +10,7 @@ const config = require(__dirname + "/../config/config.js")[env];
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
+if (config?.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], {
     ...config,
     define: {
@@ -55,10 +55,16 @@ db.Sequelize = Sequelize;
 
 // Conditionally sync based on environment
 if (env === "development") {
-  sequelize.sync({ force: true }) // Force sync in dev environment
+  sequelize
+    .sync({ force: true }) // Force sync in dev environment
     .catch((err) => console.error("Error syncing database:", err));
 } else if (env === "production") {
-  sequelize.sync({ alter: true }) // Use alter in production to avoid data loss
+  sequelize
+    .sync({ alter: true }) // Use alter in production to avoid data loss
+    .catch((err) => console.error("Error syncing database:", err));
+} else {
+  sequelize
+    .sync({ force: true }) // Use alter in production to avoid data loss
     .catch((err) => console.error("Error syncing database:", err));
 }
 

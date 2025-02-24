@@ -16,7 +16,8 @@ describe("getUserProfile", () => {
 
     afterAll(() => {
       User.findByPk.mockRestore();
-    })
+    });
+
     it("should return user profile with avatar path", async () => {
       const mockUser = {
         get: jest.fn().mockReturnValue({
@@ -54,7 +55,9 @@ describe("getUserProfile", () => {
       jest.resetAllMocks(); // Reset mocks before running integration tests
       jest.resetModules(); // Clear require cache for clean environment
 
+      console.log("Syncing database...");
       await sequelize.sync({ force: true }); // Sync the database with force option to reset it
+      console.log("Database synced.");
     });
 
     afterEach(async () => {
@@ -63,6 +66,7 @@ describe("getUserProfile", () => {
     });
 
     afterAll(async () => {
+      console.log("Closing sequelize connection...");
       await sequelize.close(); // Close sequelize connection after all tests
     });
 

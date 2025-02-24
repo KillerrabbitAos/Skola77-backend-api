@@ -11,8 +11,7 @@ const authenticate = require("./middlewares/authenticate");
 
 function createServer(config = {}) {
   const app = express();
-  const PORT = config.port || process.env.PORT || 5051;
-  const logStream = config.logStream || process.stdout;
+  const PORT = 5051;
 
   // CORS Configuration
   const corsOptions = {
@@ -68,7 +67,6 @@ function createServer(config = {}) {
     app.listen(PORT, () => {
       const message = `Server is running on port ${PORT}.`;
       console.log(message);
-      logStream.write(`${message}\n`);
     });
   }
 

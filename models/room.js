@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       jsData: {
-        type: DataTypes.TEXT('long')
+        type: DataTypes.TEXT
       }
     },
     {

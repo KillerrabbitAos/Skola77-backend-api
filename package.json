@@ -390,7 +390,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "cross-env NODE_ENV=test jest",
+    "test": "cross-env NODE_ENV=test jest --detectOpenHandles",
     "test:unit": "jest --testNamePattern='Unit Tests'",
     "test:integration": "cross-env NODE_ENV=test jest --testNamePattern='Integration Tests'"
   },
