@@ -6,7 +6,7 @@ const Sequelize = require("sequelize");
 const process = require("process");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
-const config = require(__dirname + "/../config/config.json")[env];
+const config = require(__dirname + "/../config/config.js")[env];
 const db = {};
 
 let sequelize;
@@ -53,14 +53,13 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-// Synchronize the database
-sequelize
-  .sync({ force: true }) // Use `{ force: true }` to drop and recreate tables, `{ alter: true }` will try to adjust tables without dropping them
-  .then(() => {
-    console.log("Database synchronized");
-  })
-  .catch((err) => {
-    console.error("Error syncing database:", err);
-  });
+// Conditionally sync based on environment
+if (env === "development") {
+  sequelize.sync({ force: true }) // Force sync in dev environment
+    .catch((err) => console.error("Error syncing database:", err));
+} else if (env === "production") {
+  sequelize.sync({ alter: true }) // Use alter in production to avoid data loss
+    .catch((err) => console.error("Error syncing database:", err));
+}
 
 module.exports = db;

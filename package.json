@@ -380,6 +380,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "cross-env": "^7.0.3",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",
@@ -389,7 +390,9 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=test jest",
+    "test:unit": "jest --testNamePattern='Unit Tests'",
+    "test:integration": "cross-env NODE_ENV=test jest --testNamePattern='Integration Tests'"
   },
   "repository": {
     "type": "git",

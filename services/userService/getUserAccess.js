@@ -1,5 +1,5 @@
 const { User } = require("../../models");
-const getNiceUserData = require("../user/helpers/getNiceUserData");
+const getNiceUserData = require("./helpers/getNiceUserData");
 
 async function getUserAccess(userId) {
   const user = await User.findByPk(userId);

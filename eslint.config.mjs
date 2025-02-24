@@ -34,6 +34,9 @@ export default [
       globals: {
         ...globals.jest, // Jest-globals
       },
+      rules: {
+        "max-lines-per-function": "off",
+      },
     },
   },
   {

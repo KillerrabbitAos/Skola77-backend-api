@@ -158,6 +158,12 @@ function findGroupIdForSeatingPlan(groups, seatingPlan) {
     null;
 }
 
+/**
+ *
+ * @param {Array} rooms - An array of the room objects.
+ * @param {Object} seatingPlan - A seating plan object.
+ * @returns {Integer} - The id to map as seating plan klassid.
+ */
 function findRoomIdForSeatingPlan(rooms, seatingPlan) {
   rooms.find((room) => JSON.parse(room.jsData).id === seatingPlan.klassrum.id)
     ?.id ||
@@ -166,6 +172,7 @@ function findRoomIdForSeatingPlan(rooms, seatingPlan) {
     )?.id ||
     null;
 }
+
 /**
  * Upserts a seating plan for a user.
  *

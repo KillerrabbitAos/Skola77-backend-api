@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: DataTypes.STRING,
       jsData: {
-        type: DataTypes.TEXT("long"),
+        type: DataTypes.TEXT,
       },
       ownerId: {
         type: DataTypes.INTEGER,

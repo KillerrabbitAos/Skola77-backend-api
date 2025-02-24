@@ -1,4 +1,4 @@
-const { Organization, Membership } = require('../models');
+const { Organization, Membership } = require('../../models');
 
 async function createOrganization(userId, name, memberIds = []) {
   const organization = await Organization.create({
