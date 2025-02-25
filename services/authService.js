@@ -2,6 +2,7 @@ const { User } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { processAndSaveImage } = require("./uploadService");
+const logger = require("../logger");
 
 /**
  * Logs in a user by validating credentials and setting a JWT token in the session.
@@ -63,7 +64,7 @@ const register = async ({ name, email, password, file, session }) => {
     expiresIn: "1h",
   });
   session.token = token;
-  console.log(`User ${user.id} registered`);
+  logger.handleUserRegistration(user);
   return token;
 };
 

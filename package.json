@@ -380,6 +380,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "chokidar-cli": "^3.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.1",

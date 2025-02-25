@@ -1,12 +1,11 @@
 "use strict";
 
-const logger = require("../logger")
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
 const process = require("process");
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || "development";
+const env = "test";
 const config = require(__dirname + "/../config/config.js")[env];
 const db = {};
 
@@ -34,8 +33,8 @@ fs.readdirSync(__dirname)
       file.indexOf(".") !== 0 &&
       file.slice(-3) === ".js" &&
       file !== basename &&
-      file.indexOf(".test.js") === -1 && 
-      file !== "indexForTest.js"
+      file.indexOf(".test.js") === -1 &&
+      file !== "index.js"
   )
   .forEach((file) => {
     const model = require(path.join(__dirname, file))(
@@ -55,19 +54,8 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-// Conditionally sync based on environment
-if (env === "development") {
-  sequelize
-    .sync({ force: true }) // Force sync in dev environment
-    .catch(logger.handleDbSyncError);
-} else if (env === "production") {
-  sequelize
-    .sync({ alter: true }) // Use alter in production to avoid data loss
-    .catch(logger.handleDbSyncError);
-} else {
-  sequelize
-    .sync({ force: true }) // Use alter in production to avoid data loss
-    .catch(logger.handleDbSyncError);
-}
+sequelize
+  .sync({ force: true })
+  .catch((err) => console.error("Error syncing database:", err));
 
 module.exports = db;
