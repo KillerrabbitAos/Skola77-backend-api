@@ -1,40 +1,46 @@
-'use strict';
-const { Model, Sequelize } = require('sequelize');
+"use strict";
+const { Model, Sequelize } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
-      User.hasMany(models.Room, { foreignKey: 'owner_id', as: 'owned_rooms' });
-      User.hasMany(models.Group, { foreignKey: 'owner_id', as: 'owned_groups' });
-      User.hasMany(models.SeatingPlan, { as: "owned_seating_plans", foreignKey: 'owner_id' });
+      User.hasMany(models.Room, { foreignKey: "owner_id", as: "owned_rooms" });
+      User.hasMany(models.Group, {
+        foreignKey: "owner_id",
+        as: "owned_groups",
+      });
+      User.hasMany(models.SeatingPlan, {
+        as: "owned_seating_plans",
+        foreignKey: "owner_id",
+      });
       User.belongsToMany(models.Organization, {
         through: models.Membership,
-        foreignKey: 'user_id',
-        as: 'members',
+        foreignKey: "user_id",
+        as: "members",
       });
       User.belongsToMany(models.Group, {
         through: models.UserGroup,
-        foreignKey: 'user_id',
-        as: 'received_groups',
+        foreignKey: "user_id",
+        as: "received_groups",
       });
       User.belongsToMany(models.Room, {
         through: models.UserRoom,
-        foreignKey: 'user_id',
-        as: 'received_rooms',
+        foreignKey: "user_id",
+        as: "received_rooms",
       });
       User.belongsToMany(models.SeatingPlan, {
         through: models.UserSeatingPlan,
-        foreignKey: 'user_id',
-        as: 'received_seating_plans',
+        foreignKey: "user_id",
+        as: "received_seating_plans",
       });
       User.hasMany(models.Organization, {
-        as: 'owner',
-        foreignKey: 'owner_id',
+        as: "owner",
+        foreignKey: "owner_id",
       });
       User.belongsToMany(models.Room, {
         through: models.UserRoom,
-        foreignKey: 'user_id',
-        as: 'rooms',
+        foreignKey: "user_id",
+        as: "rooms",
       });
     }
   }
@@ -47,26 +53,26 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         allowNull: false,
       },
-      name: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
+      name: { type: DataTypes.STRING, unique: true },
+      email: { type: DataTypes.STRING, unique: true },
+      password: { type: DataTypes.STRING, unique: true },
       isAdmin: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
       createdAt: {
         type: DataTypes.DATE,
-        defaultValue: Sequelize.NOW, 
+        defaultValue: Sequelize.NOW,
         allowNull: false,
       },
       lastLogin: {
         type: DataTypes.DATE,
         defaultValue: Sequelize.NOW,
-        allowNull: true, 
+        allowNull: true,
       },
       language: {
         type: DataTypes.STRING,
-        defaultValue: 'en',
+        defaultValue: "en",
       },
       lastnameFirst: {
         type: DataTypes.BOOLEAN,
@@ -87,9 +93,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'User',
-      tableName: 'users',
-      timestamps: true, 
+      modelName: "User",
+      tableName: "users",
+      timestamps: true,
     }
   );
 

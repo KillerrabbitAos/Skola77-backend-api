@@ -53,7 +53,9 @@ const register = async ({ name, email, password, file, session }) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await User.create({ name, email, password: hashedPassword });
-
+  if (!user) {
+    throw new Error();
+  }
   if (file) {
     const result = await processAndSaveImage(user.id, file);
     user.avatar = result.imageUrl;
