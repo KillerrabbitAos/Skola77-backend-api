@@ -64,7 +64,7 @@ const register = async ({ name, email, password, file, session }) => {
     expiresIn: "1h",
   });
   session.token = token;
-  logger.handleUserRegistration(user);
+  logger.handleUserReg(user);
   return token;
 };
 

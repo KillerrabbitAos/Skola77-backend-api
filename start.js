@@ -10,7 +10,6 @@ const adminRoutes = require("./routes/adminRoutes");
 const authenticate = require("./middlewares/authenticate");
 
 function createServer(config = {}) {
-  
   const app = express();
 
   const corsOptions = {
@@ -19,7 +18,7 @@ function createServer(config = {}) {
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   };
-  
+
   app.use(cors(corsOptions));
 
   app.use(
