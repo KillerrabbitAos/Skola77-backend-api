@@ -43,10 +43,11 @@ const handlers = {
     apiConsole.log("New user registered: ", userInfo);
   },
 
-  handleRoomCreation: async (room) => {
-    const roomInfo = await room.get({ plain: true });
-    roomInfo.jsData = "excluded";
-    apiConsole.log("New room created: ", roomInfo);
+  handleCreation: async (entity) => {
+    const entityInfo = await entity.get({ plain: true });
+    entityInfo.jsData = "excluded";
+    const type = entity.constructor.name;
+    apiConsole.log(`New ${type} created: `, entityInfo);
   },
 
   handleDbSyncError: (error) => {

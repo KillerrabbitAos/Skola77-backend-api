@@ -32,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       jsData: {
-        type: DataTypes.TEXT
-      }
+        type: DataTypes.TEXT,
+      },
     },
     {
       sequelize,
