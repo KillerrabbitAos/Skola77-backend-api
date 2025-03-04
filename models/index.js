@@ -62,7 +62,7 @@ if (env === "development") {
     .catch(logger.handleDbSyncError);
 } else if (env === "production") {
   sequelize
-    .sync({ alter: true }) // Use alter in production to avoid data loss
+    .sync({ force: true }) // Use alter in production to avoid data loss
     .catch(logger.handleDbSyncError);
 } else {
   sequelize

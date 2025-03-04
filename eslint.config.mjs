@@ -30,7 +30,7 @@ export default [
   },
 
   {
-    files: ["**/*.test.js"],
+    files: ["**/*.test.js", "**/userData.js"],
     languageOptions: {
       globals: {
         ...globals.jest, // Jest-globals
