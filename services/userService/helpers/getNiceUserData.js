@@ -101,7 +101,7 @@ function convertSeatingPlanToOldFrontendFormat(seatingPlan, userId) {
     owner: seatingPlan.ownerId === userId ? "you" : seatingPlan.ownerId,
     namn: seatingPlan.name,
     klassrum: { ...jsData.klassrum },
-    klass: { ...jsData.klasser },
+    klass: { ...jsData.klass },
   };
 }
 
