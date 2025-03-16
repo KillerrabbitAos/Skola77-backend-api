@@ -12,10 +12,18 @@ exports.logout = (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   console.log("Login request:", email, password);
+  async function hashPassword(password) {
+    const msgUint8 = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+  const hashedPassword = await hashPassword(password);
   try {
     await authService.login({
       email,
-      password,
+      password: hashedPassword,
       session: req.session,
     });
     res.json({ message: "Login successful", token: "Stored in session" });

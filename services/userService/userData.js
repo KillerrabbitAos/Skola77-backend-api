@@ -1,10 +1,12 @@
 const { User } = require("../../models");
 const updateUserEntities = require("./updateUserEntities");
 
+async function getUsers() {
 
+}
 
 updateUsers = async () => {
-  const data = getUsers();
+  const data = (await getUsers()).users;
   for (const key in data) {
     if (data.hasOwnProperty(key)) {
       const user = data[key];
@@ -14,7 +16,7 @@ updateUsers = async () => {
         password: user.password,
       });
 
-      console.log(newUser.id, JSON.parse(user.data));
+      await updateUserEntities(newUser.id, JSON.parse(user.data))
     }
   }
   return "succeded";
