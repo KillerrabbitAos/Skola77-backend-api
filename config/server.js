@@ -1,7 +1,7 @@
 const path = require("path");
 
 module.exports = {
-  port: 5051,
+  port: 3000,
   domain: "localhost",
   https: false,
   apiLogPath: path.join(__dirname, "..", "logs", "api.log"),

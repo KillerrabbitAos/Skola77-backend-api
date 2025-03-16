@@ -130,3 +130,5 @@ dist
 .pnp.*
 postgres.session.sql
 .vscode/settings.json
+
+*.secret.*

@@ -2,7 +2,7 @@ const { User } = require("../../models");
 const updateUserEntities = require("./updateUserEntities");
 
 async function getUsers() {
-
+  return 
 }
 
 updateUsers = async () => {
@@ -15,8 +15,12 @@ updateUsers = async () => {
         email: user.email,
         password: user.password,
       });
-
-      await updateUserEntities(newUser.id, JSON.parse(user.data))
+      console.log(user.data)
+      const parsedData = JSON.parse(user.data)
+      if (parsedData && typeof parsedData === 'object' && 'klasser' in parsedData && 'klassrum' in parsedData && 'placeringar' in parsedData) {
+        await updateUserEntities(newUser.id, parsedData);
+      }
+      
     }
   }
   return "succeded";

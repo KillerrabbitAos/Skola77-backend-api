@@ -256,6 +256,7 @@ async function updateUserEntities(userId, jsData) {
   if (!jsData) {
     throw new Error("jsData is required");
   }
+
   const groupsPromise = Promise.all(
     jsData.klasser.map((group) => upsertGroup(userId, group))
   );
